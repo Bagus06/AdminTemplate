@@ -6,8 +6,8 @@
 <body class="hold-transition layout-top-nav">
     <div class="preloader">
         <div class="loading">
-            <img src="<?= base_url('assets/images/logo/loading.gif') ?>" width="80">
-            <p>Harap Tunggu</p>
+            <img src="<?= base_url(application()['loader']) ?>" width="80">
+            <p>Harap Tunggu...</p>
         </div>
     </div>
     <div class="wrapper">

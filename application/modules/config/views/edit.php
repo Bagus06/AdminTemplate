@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Application Setting</h3>
                 </div>
-                <form action="<?= base_url('config/edit') . encrypt_url($data['data']['application']['title']) ?>"
+                <form action="<?= base_url('config/edit/') . encrypt_url($data['data']['application']['title']) ?>"
                     method="post" enctype='multipart/form-data'>
                     <div class="card-body">
                         <div class="form-group">
@@ -28,15 +28,21 @@
                         </div>
                         <div class="form-group">
                             <label for="showLogo">App Logo</label><br>
-                            <img src="<?= base_url('assets/images/logo/') . $data['data']['application']['value']->logo ?>"
+                            <img src="<?= base_url('assets/images/logo/') . @$data['data']['application']['value']->logo ?>"
                                 style="width: 200px;" id="showLogo" align="left"><br>
                             <input class="form-control" name="logo" type="file" id="loadLogo">
                         </div>
                         <div class="form-group">
                             <label for="showBg">App Background</label><br>
-                            <img src="<?= base_url('assets/images/background/') . $data['data']['application']['value']->background ?>"
+                            <img src="<?= base_url('assets/images/background/') . @$data['data']['application']['value']->background ?>"
                                 style="width: 200px;" id="showBg" align="left"><br>
                             <input class="form-control" name="background" type="file" id="loadBg">
+                        </div>
+                        <div class="form-group">
+                            <label for="showLoader">App Loader</label><br>
+                            <img src="<?= base_url('assets/images/logo/') . @$data['data']['application']['value']->loading ?>"
+                                style="width: 200px;" id="showLoader" align="left"><br>
+                            <input class="form-control" name="loading" type="file" id="loadLoader">
                         </div>
                     </div>
                     <div class="card-footer">

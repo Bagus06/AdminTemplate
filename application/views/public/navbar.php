@@ -2,7 +2,8 @@
     <div class="container">
         <a href="<?= base_url() ?>" class="navbar-brand">
             <img src="<?= base_url(application()['logo']) ?>" alt="Kalam Fuhum Logo" class="brand-image">
-            <span style="padding-left: 10px;" class="brand-text font-weight-light"><b>MahaData</b>KalamFuhum</span>
+            <span style="padding-left: 10px;"
+                class="brand-text font-weight-light"><b><?= application()['name'] ?></b></span>
         </a>
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
             aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">

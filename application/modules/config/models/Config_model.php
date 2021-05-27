@@ -3,7 +3,7 @@
 class Config_model extends CI_model
 {
 	private function _uploadLogo()
-    {
+    {	
         $filename = 'app-logo';
         $config['upload_path']          = './assets/images/logo';
         $config['allowed_types']        = 'jpeg|jpg|png';
@@ -31,8 +31,47 @@ class Config_model extends CI_model
 					'source_image' => $source_path,
 					'new_image' => $target_path,
 					'maintain_ratio' => TRUE,
+					'width' => ceil($resizeTo)
+				);
+				$this->load->library('image_lib', $config_manip);
+				$this->image_lib->resize();
+				$this->image_lib->rotate();
+				$this->image_lib->clear();
+			}
+            return $this->upload->data("file_name");
+        }
+        return "default.jpg";
+    }
+
+	private function _uploadLoading()
+    {
+		$filename = 'app-loading';
+        $config['upload_path']          = './assets/images/logo';
+        $config['allowed_types']        = 'gif';
+        $config['file_name']            = $filename;
+        $config['overwrite']            = true;
+        // $config['max_size']             = 1024; // 1MB
+        //$config['min_width']            = 1920;
+        //$config['min_height']           = 1128;
+        //$config['max_width']            = 1920;
+        //$config['max_height']           = 1128;
+		
+        $this->load->library('upload', $config);
+		$this->upload->initialize($config);
+        if ($this->upload->do_upload('loading')) {
+			$uploadedImage = $this->upload->data();
+			if ($uploadedImage['file_size'] > 1024) {
+				$resizeTo = 0;
+				$resizeTo = $uploadedImage['file_size'] / 1000;
+				$resizeTo = $uploadedImage['image_width'] / ceil($resizeTo);
+				$source_path = './assets/images/logo/' . $uploadedImage['file_name'];
+				$target_path = './assets/images/logo/';
+				$config_manip = array(
+					'image_library' => 'gd2',
+					'source_image' => $source_path,
+					'new_image' => $target_path,
+					'maintain_ratio' => TRUE,
 					'width' => ceil($resizeTo),
-					'rotation_angle' => 90,
 				);
 				$this->load->library('image_lib', $config_manip);
 				$this->image_lib->resize();
@@ -74,7 +113,6 @@ class Config_model extends CI_model
 					'new_image' => $target_path,
 					'maintain_ratio' => TRUE,
 					'width' => ceil($resizeTo),
-					'rotation_angle' => 90,
 				);
 			
 				$this->load->library('image_lib', $config_manip);
@@ -88,6 +126,14 @@ class Config_model extends CI_model
 	}
 	
 	private function _deleteLogo($image_name)
+    {
+        if ($image_name != "default.jpg") {
+            $filename = explode(".", $image_name)[0];
+            return array_map('unlink', glob(FCPATH . "/assets/images/logo/$filename.*"));
+        }
+    }
+
+	private function _deleteLoading($image_name)
     {
         if ($image_name != "default.jpg") {
             $filename = explode(".", $image_name)[0];
@@ -118,11 +164,28 @@ class Config_model extends CI_model
 
 		if (!empty($this->input->post())) {
 			$data = $this->input->post();
+			$current_data = $this->db->get_where('config', ['title'=>$id])->row_array();
+			$current_data = json_decode($current_data['value']);
+			$logo = @$current_data->logo;
+			$background = @$current_data->background;
+			$loading = @$current_data->loading;
+			
+			if (!empty($_FILES['logo']['name'])) {
+				$logo = $this->_uploadLogo();
+			}
+			if (!empty($_FILES['background']['name'])) {
+				$background = $this->_uploadBackground();
+			}
+			if (!empty($_FILES['loading']['name'])) {
+				$loading = $this->_uploadLoading();
+			}
+
 			$input = [
 				'title' => @$data['title'],
 				'desc' => @$data['desc'],
-				'logo' => @$this->_uploadLogo(),
-				'background' => @$this->_uploadBackground()
+				'logo' => @$logo,
+				'background' => @$background,
+				'loading' => @$loading
 			];
 			$input = json_encode($input);
 

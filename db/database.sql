@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 25 Mei 2021 pada 11.24
+-- Generation Time: 27 Mei 2021 pada 11.35
 -- Versi Server: 10.1.34-MariaDB
 -- PHP Version: 5.6.30
 
@@ -37,7 +37,7 @@ CREATE TABLE `config` (
 --
 
 INSERT INTO `config` (`id`, `title`, `value`) VALUES
-(2, 'application', '{\"title\":\" Siente CMS\",\"desc\":\"anu\",\"logo\":\"app-logo.png\",\"background\":\"default.jpg\"}'),
+(2, 'application', '{\"title\":\" Siente CMS\",\"desc\":\"Integrited admin template By SIENTE Corp\",\"logo\":\"app-logo.png\",\"background\":\"app-background.jpeg\",\"loading\":\"app-loading.gif\"}'),
 (3, 'app_status', NULL);
 
 -- --------------------------------------------------------
@@ -119,18 +119,6 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `username`, `password`, `permission_id`, `email`, `token`, `created`, `updated`) VALUES
 (1, 'developer', '$2y$10$C3zyhmbvnu7vD0DS.xjJT.RMTOp4oTDEV9/7UFljdIz.bOBsX6NPG', 2, 'developer@example.com', '', '2021-05-20 07:36:08', '2021-05-24 14:34:18');
 
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `user_has_link`
---
-
-CREATE TABLE `user_has_link` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `link_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- Indexes for dumped tables
 --
@@ -162,14 +150,6 @@ ALTER TABLE `user`
   ADD KEY `user_ibfk_1` (`permission_id`);
 
 --
--- Indexes for table `user_has_link`
---
-ALTER TABLE `user_has_link`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `link_id` (`link_id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -194,11 +174,6 @@ ALTER TABLE `permission`
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT for table `user_has_link`
---
-ALTER TABLE `user_has_link`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
@@ -207,13 +182,6 @@ ALTER TABLE `user_has_link`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
-
---
--- Ketidakleluasaan untuk tabel `user_has_link`
---
-ALTER TABLE `user_has_link`
-  ADD CONSTRAINT `user_has_link_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_has_link_ibfk_2` FOREIGN KEY (`link_id`) REFERENCES `link` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

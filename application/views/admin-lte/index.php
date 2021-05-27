@@ -6,19 +6,18 @@
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse layout-fixed">
-    <!-- <div class="preloader">
+    <div class="preloader">
         <div class="loading">
-            <img src="<?= base_url('assets/images/logo/loading.gif') ?>" width="80">
-            <p>Harap Tunggu</p>
+            <img src="<?= base_url(application()['loader']) ?>" width="80">
+            <p>Harap Tunggu...</p>
         </div>
-    </div> -->
+    </div>
     <div id="alert" data-status="<?= @$data['status'] ?>" data-msg="<?= @$data['msg'] ?>"></div>
     <div class="wrapper">
         <?php $this->load->view('admin-lte/nav-menu') ?>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="<?php echo base_url(); ?>" class="brand-link">
-                <img src="<?php echo base_url(); ?>assets/images/logo/logo-fuhum.png" alt="Kalam Fuhum Logo"
-                    class="brand-image">
+                <img src="<?php echo base_url(application()['logo']); ?>" alt="Kalam Fuhum Logo" class="brand-image">
                 <span class="brand-text font-weight-light"><?= application()['name'] ?></span>
             </a>
             <div class="sidebar">

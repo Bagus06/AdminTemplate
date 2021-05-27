@@ -52,13 +52,25 @@ $('document').ready(function() {
         }
     });
 });
-// config/edit/logo
+// config/edit/Background
 $('document').ready(function() {
     $("#loadBg").change(function() {
         if (this.files && this.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
                 $('#showBg').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+});
+// config/edit/Loader
+$('document').ready(function() {
+    $("#loadLoader").change(function() {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#showLoader').attr('src', e.target.result);
             }
             reader.readAsDataURL(this.files[0]);
         }
