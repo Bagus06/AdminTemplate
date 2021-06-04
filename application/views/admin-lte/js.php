@@ -3,13 +3,15 @@
 <script type="text/javascript">
 var BASE_URL = "<?php echo base_url(); ?>";
 </script>
+<script src="<?php echo base_url(); ?>assets/js/custom/permission.js"></script>
 <!-- Bootstrap 4 -->
 <script src="<?php echo base_url(); ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="<?php echo base_url(); ?>assets/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="<?php echo base_url(); ?>assets/js/demo.js"></script>
 <!-- jQuery Knob Chart -->
 <script src="<?php echo base_url(); ?>assets/vendor/jquery-knob/jquery.knob.min.js"></script>
-<!-- AdminLTE App -->
-<script src="<?php echo base_url(); ?>assets/js/adminlte.js"></script>
-<script src="<?php echo base_url(); ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- SweetAlert2 -->
 <script src="<?php echo base_url(); ?>assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/custom/alert.js"></script>
@@ -23,13 +25,11 @@ var BASE_URL = "<?php echo base_url(); ?>";
 <script src="<?php echo base_url(); ?>assets/vendor/datatable/dataTables.bootstrap4.min.js"></script>
 <!-- datepicker -->
 <script src="<?php echo base_url(); ?>assets/vendor/date-picker/bootstrap-datepicker.min.js"></script>
-
 <!-- Nestable -->
 <?php if($this->uri->rsegments[1] == 'link'): ?>
 <script src="<?php echo base_url(); ?>assets/vendor/nestable/jquery.nestable.js"></script>
 <script src="<?php echo base_url(); ?>assets/vendor/nestable/custom.nestable.js"></script>
 <?php endif; ?>
-
 <script src="<?php echo base_url(); ?>assets/js/custom/table.js"></script>
 <script>
 $(document).ready(function() {

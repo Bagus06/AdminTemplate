@@ -6,12 +6,12 @@
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse layout-fixed">
-    <div class="preloader">
+    <!-- <div class="preloader">
         <div class="loading">
             <img src="<?= base_url(application()['loader']) ?>" width="80">
             <p>Harap Tunggu...</p>
         </div>
-    </div>
+    </div> -->
     <div id="alert" data-status="<?= @$data['status'] ?>" data-msg="<?= @$data['msg'] ?>"></div>
     <div class="wrapper">
         <?php $this->load->view('admin-lte/nav-menu') ?>

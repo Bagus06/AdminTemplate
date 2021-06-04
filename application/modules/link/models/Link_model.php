@@ -67,11 +67,6 @@ class Link_model extends CI_model
 		return $this->db->get('link')->result_array();
 	}
 
-	public function all_user_has_link()
-	{
-		return $this->db->get('user_has_link')->result_array();
-	}
-
 	public function delete($id = 0)
 	{
 		if (!empty($id)) {

@@ -10,6 +10,11 @@ class User extends CI_Controller {
 	public function check_login() {
 		$this->user_model->check_login();
 	}
+
+	public function token_request() {
+		$this->load->view('user/token_request', ['data'=>$this->user_model->token_request()]);
+	}
+
 	public function login() {
 		$this->load->view('user/login', ['data'=>$this->user_model->login()]);
 	}

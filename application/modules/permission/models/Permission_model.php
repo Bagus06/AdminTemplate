@@ -22,6 +22,7 @@ class Permission_model extends CI_model
 		if (!empty($this->input->post())) {
 			$data = $this->input->post();
 			$data['title'] = strtoupper($data['title']);
+			print_r($data);die;
 			foreach ($data['group'] as $key) {
 				$this->db->select('id');
 				$get_master = $this->db->get_where('link', ['to_link' => 0, 'id' => $key])->row_array();

@@ -82,6 +82,49 @@ class User_model extends CI_model
 		return $msg;
 	}
 
+	private function generateRandomString() {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		$length = 25;
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+		return $randomString;
+	}
+
+	public function token_request($id = 0)
+	{
+		$msg = [ ];
+		if (!empty($this->input->post())) {
+			$data = $this->input->post();
+			date_default_timezone_set('Asia/Jakarta');
+			$date = date('Y-m-d h:i:s');
+			$date = date('Y-m-d H:i:s', strtotime('+ 10 minute', strtotime($date)));
+			$data = [
+				'email' => $data['email'],
+				'link_token' =>'',
+				'expired' => $date
+			];
+			$this->db->select('id');
+			$current_data = $this->db->get_where('token_request', ['email' => $data['email']])->row_array();
+			if (!empty($id)) {
+				# code...
+			}else{
+				if (empty($current_data)) {
+					if ($this->db->insert('token_request', $data)) {
+						$msg = ['status' => 'success', 'msg' => 'The request was successfully sent to the administrator'];
+					}else{
+						$msg = ['status' => 'error', 'msg' => 'The request failed to be sent to the administrator'];
+					}
+				}else{
+					$msg = ['status' => 'error', 'msg' => 'You have requested a few minutes ago, please check your email. If not, please contact Custommer Service'];
+				}
+			}
+		}
+		return $msg;
+	}
+
 	public function save($id = 0, $data = array())
 	{
 		$msg = [];

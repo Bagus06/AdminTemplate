@@ -25,6 +25,22 @@ class Permission extends CI_Controller {
 		$this->load->view('index', ['data' => @$data]);
 	}
 
+	public function edit_v1($id=0) {
+		
+		$this->form_validation->set_rules('title', 'Title', 'required|min_length[5]|max_length[10]');
+
+		$data = $this->permission_model->save($id);
+		$data['link'] = $this->permission_model->all_link();
+		$data['array_child'] = [];
+		foreach ($data['link'] as $key => $value) {
+			if ($value['to_link'] != 0) {
+				$data['array_child'][] = $value['to_link'];
+			}
+		}
+		// print_r(@$this->input->post());die;
+		$this->load->view('index', ['data' => @$data]);
+	}
+
 	function get_ajax() {
 		$list=$this->permission_model->get_datatables();
 		$data=array();

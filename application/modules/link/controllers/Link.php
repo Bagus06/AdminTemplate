@@ -62,16 +62,11 @@ class Link extends CI_Controller
 		$data = array();
 		$no = @$_POST['start'];
 		$link_all = $this->link_model->all();
-		$array_user_has_link = $this->array_user_has_link();
 		// print_r($array_user_has_link);die;
 		
 		foreach ($list as $item) {
 			$no++;
 			$row = array();
-			$checked = '';
-			if (in_array($item->id, @$array_user_has_link)) {
-				$checked = 'checked';
-			}
 			$row[] = $no;
 			$row[] = $item->title;
 			$row[] = $item->link;
