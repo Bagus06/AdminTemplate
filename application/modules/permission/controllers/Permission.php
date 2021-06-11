@@ -8,9 +8,14 @@ class Permission extends CI_Controller {
 
 	public function main($id = 0)
 	{
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		
+		if (!empty($this->input->post()['title'])) {
+			$data = $this->permission_model->save($id);
+		}
 		if (!empty($id)) {
 			$id = decrypt_url($id);
-			$data = $this->profile_model->delete($id);
+			$data = $this->permission_model->delete($id);
 		}
 		$this->load->view('index', ['data' => @$data]);
 	}
@@ -18,10 +23,9 @@ class Permission extends CI_Controller {
 	public function edit($id=0) {
 		
 		$this->form_validation->set_rules('title', 'Title', 'required|min_length[5]|max_length[10]');
-
+		
 		$data = $this->permission_model->save($id);
 		$data['link'] = $this->permission_model->all_link(); 
-		// print_r(@$this->input->post());die;
 		$this->load->view('index', ['data' => @$data]);
 	}
 
@@ -37,7 +41,7 @@ class Permission extends CI_Controller {
 				$data['array_child'][] = $value['to_link'];
 			}
 		}
-		// print_r(@$this->input->post());die;
+		// print_r($data['data']['group']);die;
 		$this->load->view('index', ['data' => @$data]);
 	}
 
@@ -50,25 +54,26 @@ class Permission extends CI_Controller {
 		foreach ($list as $item) {
 			$no++;
 			$row=array();
-			$row[]=$no.".";
-			$row[]=$item->title;
+			$row[]='<a title="Detail/Edit rows" href="' . BASE_URL('permission/edit_v1/' . encrypt_url($item->id)) . '">' . $item->title . '</a>';
 			$group = '';
-			$no = 0;
-			foreach ($link as $key => $value) {
-				if (in_array($value['id'], @json_decode($item->group))) {
-					$no++;
-					if (empty($group)) {
-						$group = $no . '.' . $value['title'];
-					}else{
-						$group = $group . ' <br> ' .$no . '.' .  $value['title'];
+			$no_list = 0;
+			if (!empty($item->group)) {
+				foreach ($link as $key => $value) {
+					if (@in_array($value['id'], @json_decode($item->group))) {
+						$no_list++;
+						if (empty($group)) {
+							$group = $no_list . '.' . $value['title'];
+						}else{
+							$group = $group . ' <br> ' .$no_list . '.' .  $value['title'];
+						}
 					}
 				}
+			}else{
+				$group = 'No group List';
 			}
 			$row[]=$group;
 			// add html for action
-			$row[]='<div class="btn-group">
-			<a href="' . BASE_URL('permission/edit/' . encrypt_url($item->id)) . '"class="btn btn-warning"><i class="fas fa-pencil-alt"></i></a>
-			<a href="' . BASE_URL('permission/main/' . encrypt_url($item->id)) . '" data-items="' . $item->title . '" class="btn btn-danger delete"><i class="fas fa-trash"></i></a></div>';
+			$row[]='<a title="Delete rows" style="padding-right:20px" href="' . BASE_URL('permission/main/' . encrypt_url($item->id)) . '" data-items="' . $item->title . '" title="Delete ' . capital_letters($item->title) . '"><i class="fas fa-trash-alt"></i></a>';
 			$data[]=$row;
 		}
 

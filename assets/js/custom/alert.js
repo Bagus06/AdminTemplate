@@ -2,7 +2,6 @@ $(document).ready(function () {
   $(".preloader").fadeOut();
 })
 
-
 $(function () {
   var Toast = Swal.mixin({
     toast: true,

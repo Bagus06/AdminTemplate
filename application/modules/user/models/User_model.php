@@ -102,23 +102,29 @@ class User_model extends CI_model
 			$date = date('Y-m-d h:i:s');
 			$date = date('Y-m-d H:i:s', strtotime('+ 10 minute', strtotime($date)));
 			$data = [
-				'email' => $data['email'],
+				'number' => $data['hp'],
 				'link_token' =>'',
 				'expired' => $date
 			];
+			$validation = true;
+
+			// validation_condition
+
 			$this->db->select('id');
-			$current_data = $this->db->get_where('token_request', ['email' => $data['email']])->row_array();
-			if (!empty($id)) {
+			$current_data = $this->db->get_where('token_request', ['number' => $data['number']])->row_array();
+			if ($validation == true) {
+				if (!empty($id)) {
 				# code...
-			}else{
-				if (empty($current_data)) {
-					if ($this->db->insert('token_request', $data)) {
-						$msg = ['status' => 'success', 'msg' => 'The request was successfully sent to the administrator'];
-					}else{
-						$msg = ['status' => 'error', 'msg' => 'The request failed to be sent to the administrator'];
-					}
 				}else{
-					$msg = ['status' => 'error', 'msg' => 'You have requested a few minutes ago, please check your email. If not, please contact Custommer Service'];
+					if (empty($current_data)) {
+						if ($this->db->insert('token_request', $data)) {
+							$msg = ['status' => 'success', 'msg' => 'The request was successfully sent to the administrator'];
+						}else{
+							$msg = ['status' => 'error', 'msg' => 'The request failed to be sent to the administrator'];
+						}
+					}else{
+						$msg = ['status' => 'error', 'msg' => 'You have requested a few minutes ago, please check your email. If not, please contact Custommer Service'];
+					}
 				}
 			}
 		}
@@ -176,8 +182,12 @@ class User_model extends CI_model
 			}
 		}
 		if (!empty($id)) {
+			$this->db->select('user.*, profile.*,profile.id as profile_id');
+			$this->db->from('user');
+			$this->db->join('profile', 'profile.user_id=user.id');
 			$this->db->where(['user.id' => $id]);
-			$msg['data'] = $this->db->get('user')->row_array();
+			$msg['data'] = $this->db->get()->row_array();
+			// print_r($msg['data']);die;
 		}
 		return $msg;
 	}
@@ -190,6 +200,49 @@ class User_model extends CI_model
 	public function all_permission()
 	{
 		return $this->db->get('permission')->result_array();
+	}
+
+	public function all_gender()
+	{
+		$msg = [];
+		$msg = [
+			[
+				'id' => 0,
+				'title' => 'Perempuan'
+			],
+			[
+				'id' => 1,
+				'title' => 'Laki-laki'
+			]
+		];
+		return $msg;
+	}
+
+	public function all_province()
+	{
+		$this->db->order_by('name', 'ASC');
+		return $this->db->get('provinces')->result_array();
+	}
+	
+	public function getRegency($id = 0)
+	{
+		$id = @$_POST['id_provinces'];
+		$this->db->order_by('name', 'ASC');
+		return $this->db->get_where('regencies', ['province_id' => $id])->result_array();
+	}
+
+	public function getDistricts($id = 0)
+	{
+		$id = @$_POST['id_regencies'];
+		$this->db->order_by('name', 'ASC');
+		return $this->db->get_where('districts', ['regency_id' => $id])->result_array();
+	}
+
+	public function getVillage($id = 0)
+	{
+		$id = @$_POST['id_district'];
+		$this->db->order_by('name', 'ASC');
+		return $this->db->get_where('villages', ['district_id' => $id])->result_array();
 	}
 
 	public function delete($id = 0)

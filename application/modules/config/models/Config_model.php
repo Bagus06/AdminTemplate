@@ -158,10 +158,11 @@ class Config_model extends CI_model
 	public function save($id)
 	{
 		$msg = [];
+		$id = encrypt_url('application');
 		if (!empty($id)) {
 			$id = decrypt_url($id);
 		}
-
+		
 		if (!empty($this->input->post())) {
 			$data = $this->input->post();
 			$current_data = $this->db->get_where('config', ['title'=>$id])->row_array();
@@ -180,17 +181,17 @@ class Config_model extends CI_model
 				$loading = $this->_uploadLoading();
 			}
 
-			$input = [
+			$input_application = [
 				'title' => @$data['title'],
 				'desc' => @$data['desc'],
 				'logo' => @$logo,
 				'background' => @$background,
-				'loading' => @$loading
+				'loading' => @$loading,
+				'status' => @$data['status']
 			];
-			$input = json_encode($input);
-
+			$input_application = json_encode($input_application);
 			if (!empty($id)) {
-				$this->db->set(['value' => $input]);
+				$this->db->set(['value' => $input_application]);
 				$this->db->where('title', $id);
 				if ($this->db->update('config')) {
 					$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];

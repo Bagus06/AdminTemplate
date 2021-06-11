@@ -1,5 +1,6 @@
 <!-- jQuery -->
 <script src="<?= base_url('assets/vendor/') ?>jquery/jquery.min.js"></script>
+<script src="<?= base_url('assets/js/') ?>adminlte.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="<?= base_url('assets/vendor/') ?>bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -15,24 +16,24 @@
 <!-- datepicker -->
 <script src="<?php echo base_url(); ?>assets/vendor/date-picker/bootstrap-datepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#front').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "<?= base_url('front/get_ajax') ?>",
-                "type": "POST"
+$(document).ready(function() {
+    $('#front').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "<?= base_url('front/get_ajax') ?>",
+            "type": "POST"
+        },
+        "columnDefs": [{
+                "targets": [-1],
+                "className": 'text-center'
             },
-            "columnDefs": [{
-                    "targets": [-1],
-                    "className": 'text-center'
-                },
-                // {
-                //     "targets": [0, -1],
-                //     "orderable": false
-                // }
-            ],
-            // "order": []
-        })
+            // {
+            //     "targets": [0, -1],
+            //     "orderable": false
+            // }
+        ],
+        // "order": []
     })
+})
 </script>

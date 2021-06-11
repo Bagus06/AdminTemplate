@@ -26,7 +26,6 @@
     <div class="preloader">
         <div class="loading">
             <img src="<?= base_url(application()['loader']) ?>" width="80">
-            <p>Harap Tunggu...</p>
         </div>
     </div>
     <div id="alert" data-status="<?= @$data['status'] ?>" data-msg="<?= @$data['msg'] ?>"></div>
@@ -34,7 +33,7 @@
         <div class="lockscreen-logo">
             <a href="<?= base_url() ?>" class="h1"><?= application()['name'] ?></a>
         </div>
-        <div class="lockscreen-name"><?= @$data['userdata']['username'] ?></div>
+        <div class="lockscreen-name"><?= @$data['userdata']['name'] ?></div>
         <div class="lockscreen-item">
             <div class="lockscreen-image">
                 <?php

@@ -67,8 +67,14 @@ class Link extends CI_Controller
 		foreach ($list as $item) {
 			$no++;
 			$row = array();
-			$row[] = $no;
-			$row[] = $item->title;
+			$row[] = '<a title="Detail/Edit rows" href="' . BASE_URL('link/edit/' . encrypt_url($item->id)) . '"class="btn btn-link">' . $item->title . '</a>';
+
+			$mode = 'View';
+			if ($item->mode == 2) {
+				$mode = 'Hidden';
+			}
+
+			$row[] = $mode;
 			$row[] = $item->link;
 			$to = '';
 			foreach($link_all as $key => $value){
@@ -80,9 +86,8 @@ class Link extends CI_Controller
 			}
 			$row[] = $to;
 			// add html for action
-			$row[] = '<a href="' . BASE_URL('link/edit/' . encrypt_url($item->id)) . '"class="btn btn-info"><i
-			class="fas fa-pencil-alt"></i></a><a href="' . BASE_URL('link/main/' . encrypt_url($item->id)) . '"
-			data-items="' . $item->title . '" class="btn btn-danger delete"><i class="fas fa-trash"></i></a>';
+			$row[] = '<a title="Delete rows" href="' . BASE_URL('link/main/' . encrypt_url($item->id)) . '"
+			data-items="' . $item->title . '" class="btn btn-link delete"><i class="fas fa-trash-alt"></i></a>';
 			$data[] = $row;
 		}
 		

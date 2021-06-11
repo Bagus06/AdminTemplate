@@ -39,7 +39,7 @@
     </a>
     <ul class="nav nav-treeview">
         <?php foreach($menu as $key_submenu => $submenu): ?>
-        <?php if(($submenu['to_link'] == $value['id']) && (in_array($value['id'], json_decode($get_permission['group'])))): ?>
+        <?php if(($submenu['to_link'] == $value['id']) && (in_array($submenu['id'], json_decode($get_permission['group'])))): ?>
         <?php $link_onview[] = $submenu['id'] ?>
         <li class="nav-item">
             <a href="<?= base_url() . $submenu['link'] ?>" class="nav-link">

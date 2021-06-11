@@ -37,14 +37,17 @@
                 <a href="<?= base_url() ?>" class="h1"><?= application()['name'] ?></a>
             </div>
             <div class="card-body login-card-body">
-                <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
+                <p class="login-box-msg">You forgot your password? Please enter your whatsapp number to confirm the
+                    password change.</p>
 
                 <form action="" method="post">
                     <div class="input-group mb-3">
-                        <input name="email" type="email" class="form-control" placeholder="Email">
+                        <input class="form-control" name="hp"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            type="number" maxlength="12" placeholder="08xx xxxx xxx" required />
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fab fa-whatsapp"></span>
                             </div>
                         </div>
                     </div>

@@ -61,7 +61,6 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
     font: 14px Fantasy;
 }
 
@@ -264,7 +263,7 @@ th {
 
 label {
     display: inline-block;
-    margin-bottom: .5rem
+    margin-bottom:
 }
 
 button {
@@ -2040,7 +2039,7 @@ pre code {
 
 .table-hover tbody tr:hover {
     color: #212529;
-    background-color: rgba(0, 0, 0, .075)
+    background-color: rgba(36, 156, 255, 0.336)
 }
 
 .table-primary,
@@ -2266,8 +2265,8 @@ pre code {
 }
 
 .table-dark.table-hover tbody tr:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, .075)
+    color: rgb(255, 0, 0);
+    background-color: rgb(27, 36, 168)
 }
 
 @media (max-width:575.98px) {
@@ -2337,7 +2336,7 @@ pre code {
     display: block;
     width: 100%;
     height: calc(2.25rem + 2px);
-    padding: .375rem .75rem;
+    /* padding: .375rem .75rem; */
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -5360,7 +5359,7 @@ input[type=submit].btn-block {
 .card-header {
     padding: .75rem 1.25rem;
     margin-bottom: 0;
-    background-color: rgba(0, 0, 0, .03);
+    background-color: rgb(255, 0, 0);
     border-bottom: 0 solid rgba(0, 0, 0, .125)
 }
 
@@ -12729,7 +12728,7 @@ body:not(.layout-fixed).layout-navbar-fixed.text-sm .wrapper .main-sidebar .side
 .layout-top-nav .wrapper .main-header .brand-image {
     margin-top: -.5rem;
     margin-right: .2rem;
-    height: 33px
+    height: 51px
 }
 
 .layout-top-nav .wrapper .main-sidebar {
@@ -13163,7 +13162,7 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
     display: block;
     font-size: 1.25rem;
     line-height: 1.5;
-    padding: .8125rem .5rem;
+    /* padding: .8125rem .5rem; */
     transition: width .3s ease-in-out;
     white-space: nowrap
 }
@@ -13221,7 +13220,7 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
     margin-left: .8rem;
     margin-right: .5rem;
     margin-top: -3px;
-    max-height: 33px;
+    max-height: 46px;
     width: auto
 }
 
@@ -13544,8 +13543,9 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
     border-color: rgba(0, 0, 0, .1)
 }
 
+/* background sidebar */
 [class*=sidebar-dark-] {
-    background-color: #343a40
+    background-color: #1d3649
 }
 
 [class*=sidebar-dark-] .user-panel a:hover {
@@ -15628,7 +15628,7 @@ body.text-sm .control-sidebar {
 }
 
 .navbar-blue {
-    background-color: #007bff
+    background-color: #1d3649
 }
 
 .navbar-indigo {
@@ -15883,7 +15883,7 @@ body.text-sm .control-sidebar {
 }
 
 label:not(.form-check-label):not(.custom-file-label) {
-    font-weight: 700
+    font-weight: 0
 }
 
 .warning-feedback {
@@ -20783,7 +20783,7 @@ html.maximized-card {
 
 .card-body>.table>thead>tr>td,
 .card-body>.table>thead>tr>th {
-    border-top-width: 0
+    border-top-width: 0;
 }
 
 .card-body .fc {

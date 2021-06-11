@@ -5,7 +5,7 @@
 <meta name="author" content="">
 
 <title><?= application()['name'] . ' | ' . application()['dsc'] ?></title>
-<link rel="icon" href="<?= base_url(application()['logo']) ?>">
+<link rel="icon" href="<?= base_url(application()['logo']) ?>" sizes="100x100">
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/fontawesome-free/css/all.min.css">
 <!-- Ionicons -->
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">

@@ -25,6 +25,8 @@ var BASE_URL = "<?php echo base_url(); ?>";
 <script src="<?php echo base_url(); ?>assets/vendor/datatable/dataTables.bootstrap4.min.js"></script>
 <!-- datepicker -->
 <script src="<?php echo base_url(); ?>assets/vendor/date-picker/bootstrap-datepicker.min.js"></script>
+<!-- address select -->
+<script src="<?php echo base_url(); ?>assets/js/custom/address.js"></script>
 <!-- Nestable -->
 <?php if($this->uri->rsegments[1] == 'link'): ?>
 <script src="<?php echo base_url(); ?>assets/vendor/nestable/jquery.nestable.js"></script>

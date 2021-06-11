@@ -9,7 +9,13 @@ class Permission_model extends CI_model
 
 	public function all_link()
 	{
-		return $this->db->get_where('link')->result_array();
+		$this->db->order_by('title', 'asc');
+		if (!empty($this->input->get()['search'])) {
+			$this->db->group_start();
+            $this->db->like('title', $this->input->get()['search']);
+			$this->db->group_end();
+		}
+		return $this->db->get('link')->result_array();
 	}
 
 	public function save($id)
@@ -18,23 +24,29 @@ class Permission_model extends CI_model
 		if (!empty($id)) {
 			$id = decrypt_url($id);
 		}
-
+		
 		if (!empty($this->input->post())) {
 			$data = $this->input->post();
 			$data['title'] = strtoupper($data['title']);
-			print_r($data);die;
-			foreach ($data['group'] as $key) {
-				$this->db->select('id');
-				$get_master = $this->db->get_where('link', ['to_link' => 0, 'id' => $key])->row_array();
-				$this->db->select('id');
-				$get_chield = $this->db->get_where('link', ['to_link' => @$get_master['id']])->result_array();
-				foreach ($get_chield as $key => $value) {
-					if (!in_array($value['id'], $data['group'])) {
-						$data['group'][] = $value['id'];
-					}
-				}
+			$data_input = [];
+			$data_input = [
+				'title'=>$data['title']
+			];
+			if (!empty($data['group'])) {
+				// foreach ($data['group'] as $key) {
+				// 	$this->db->select('id');
+				// 	$get_master = $this->db->get_where('link', ['to_link' => 0, 'id' => $key])->row_array();
+				// 	$this->db->select('id');
+				// 	$get_chield = $this->db->get_where('link', ['to_link' => @$get_master['id']])->result_array();
+				// 	foreach ($get_chield as $key => $value) {
+				// 		if (!in_array($value['id'], $data['group'])) {
+				// 			$data['group'][] = $value['id'];
+				// 		}
+				// 	}
+				// }
+				$data['group'] = @json_encode($data['group']);
+				$data_input['group'] =$data['group'];
 			}
-			$data['group'] = json_encode($data['group']);
 
 			if (!empty($id)) {
 				$this->db->select('id');
@@ -42,7 +54,8 @@ class Permission_model extends CI_model
 				$current_data = $this->db->get_where('permission', ['id' => $id])->row_array();
 				if (($exist['id'] == $current_data['id']) || empty($exist['id'])) {
 					$this->db->where('id', $id);
-					if ($this->db->update('permission', $data)) {
+					$this->db->set($data_input);
+					if ($this->db->update('permission')) {
 						$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 					}else{
 						$msg = ['status' => 'error', 'msg' => 'The data you entered already exists'];
@@ -53,7 +66,7 @@ class Permission_model extends CI_model
 			}else{
 				$this->db->select('id');
 				$exist = $this->db->get_where('permission', ['title' => $data['title']])->row_array();
-				if ($this->db->insert('permission', $data)) {
+				if ($this->db->insert('permission', $data_input)) {
 					$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 				}else{
 					$msg = ['status' => 'error', 'msg' => 'The data you entered already exists'];
@@ -69,8 +82,25 @@ class Permission_model extends CI_model
 		return $msg;
 	}
 
+	public function delete($id = 0)
+	{
+		if (!empty($id)) {
+			$this->db->select('id');
+			$current_data = $this->db->get_where('permission', ['id' => $id])->row_array();
+			if (!empty($current_data)) {
+				if ($this->db->delete('permission', ['id' => $id])) {
+					return ['status' => 'success', 'msg' => 'Data has been deleted'];
+				} else {
+					return ['status' => 'danger', 'msg' => 'Data failed to delete'];
+				}
+			} else {
+				redirect(base_url('permission/main'));
+			}
+		}
+	}
+
 	// start datatables
-    var $column_order = array(null, 'title'); //set column field database for datatable orderable
+    var $column_order = array('title'); //set column field database for datatable orderable
     var $column_search = array('title'); //set column field database for datatable searchable
     var $order = array('title' => 'asc'); // default order 
  

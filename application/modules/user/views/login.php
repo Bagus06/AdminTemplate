@@ -27,7 +27,6 @@
     <div class="preloader">
         <div class="loading">
             <img src="<?= base_url(application()['loader']) ?>" width="80">
-            <p>Harap Tunggu...</p>
         </div>
     </div>
     <div id="alert" data-status="<?= @$data['status'] ?>" data-msg="<?= @$data['msg'] ?>"></div>

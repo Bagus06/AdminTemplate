@@ -5,19 +5,18 @@
     <?php $this->load->view('admin-lte/meta') ?>
 </head>
 
-<body class="hold-transition sidebar-mini sidebar-collapse layout-fixed">
-    <!-- <div class="preloader">
+<body id="body" class="hold-transition sidebar-collapse layout-navbar-fixed">
+    <div class="preloader">
         <div class="loading">
             <img src="<?= base_url(application()['loader']) ?>" width="80">
-            <p>Harap Tunggu...</p>
         </div>
-    </div> -->
+    </div>
     <div id="alert" data-status="<?= @$data['status'] ?>" data-msg="<?= @$data['msg'] ?>"></div>
     <div class="wrapper">
         <?php $this->load->view('admin-lte/nav-menu') ?>
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="<?php echo base_url(); ?>" class="brand-link">
-                <img src="<?php echo base_url(application()['logo']); ?>" alt="Kalam Fuhum Logo" class="brand-image">
+                <img src="<?php echo base_url(application()['logo']); ?>" alt="Logo" class="brand-image">
                 <span class="brand-text font-weight-light"><?= application()['name'] ?></span>
             </a>
             <div class="sidebar">
@@ -43,60 +42,25 @@
                     </ul>
                 </nav>
             </div>
-        </aside>
+        </aside> -->
         <div class="content-wrapper">
             <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0 text-dark"><?= capital_letters($this->uri->rsegments[1]) ?></h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a
-                                        href="<?php echo base_url() . $this->uri->rsegments[1]; ?>"><?= capital_letters($this->uri->rsegments[1]); ?></a>
-                                </li>
-                                <li class="breadcrumb-item active"><?= capital_letters($this->uri->rsegments[2]) ?></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
             </div>
             <section class="content">
                 <div class="container-fluid">
-                    <?php
-        $this->load->view($this->uri->rsegments[1] . '/' . $this->uri->rsegments[2]);
-        ?>
+                    <?php $this->load->view($this->uri->rsegments[1] . '/' . $this->uri->rsegments[2]);?>
                 </div>
             </section>
         </div>
         <footer class="main-footer">
             <div class="float-right d-none d-sm-block">
-                <strong>Copyright &copy; </strong>SIENTE.Corp <strong>2021</strong>
-                Beta Version.
                 <b>Version</b> <?= application()['version'] ?>
+                Beta Version.
             </div>
+            <strong>Copyright &copy; </strong>SIENTE.Corp <strong>2021</strong>
         </footer>
         <aside class="control-sidebar control-sidebar-dark">
         </aside>
-    </div>
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Anda yakin untuk logout?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Pilih "Logout" untuk keluarkan akun.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
-                    <a class="btn btn-primary" href="<?php echo base_url('logout') ?>">Logout</a>
-                </div>
-            </div>
-        </div>
     </div>
     <?php $this->load->view('admin-lte/js') ?>
 
