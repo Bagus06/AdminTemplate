@@ -42,33 +42,64 @@ class User extends CI_Controller {
 	public function address()
 	{
 		switch ($_GET['tipe']) {
-			case 'regency';
+			case 'regencyPob';
 				$data = $this->user_model->getRegency();
 				foreach($data as $key => $value){
 					$selected = '';
-                    if ($value['id'] == @$_POST['id_regency']) {
+                    if ($value['id'] == @$_POST['id_regencyPob']) {
                         $selected = 'selected';
                     }  
 					echo '<option value="'.$value['id'].'" ' . $selected . '>'.$value['name'].'</option>';
 				}
 			break;
 
-			case 'districts';
+			case 'districtsPob';
 				$data = $this->user_model->getDistricts();
 				foreach($data as $key => $value){
 					$selected = '';
-                    if ($value['id'] == @$_POST['id_districts']) {
+                    if ($value['id'] == @$_POST['id_districtsPob']) {
                         $selected = 'selected';
                     }  
 					echo '<option value="'.$value['id'].'" ' . $selected . '>'.$value['name'].'</option>';
 				}
 			break;
 
-			case 'village';
+			case 'villagePob';
 				$data = $this->user_model->getVillage();
 				foreach($data as $key => $value){
 					$selected = '';
-                    if ($value['id'] == @$_POST['id_village']) {
+                    if ($value['id'] == @$_POST['id_villagePob']) {
+                        $selected = 'selected';
+                    }  
+					echo '<option value="'.$value['id'].'" ' . $selected . '>'.$value['name'].'</option>';
+				}
+			case 'regencyResidence';
+				$data = $this->user_model->getRegency();
+				foreach($data as $key => $value){
+					$selected = '';
+                    if ($value['id'] == @$_POST['id_regencyResidence']) {
+                        $selected = 'selected';
+                    }  
+					echo '<option value="'.$value['id'].'" ' . $selected . '>'.$value['name'].'</option>';
+				}
+			break;
+
+			case 'districtsResidence';
+				$data = $this->user_model->getDistricts();
+				foreach($data as $key => $value){
+					$selected = '';
+                    if ($value['id'] == @$_POST['id_districtsResidence']) {
+                        $selected = 'selected';
+                    }  
+					echo '<option value="'.$value['id'].'" ' . $selected . '>'.$value['name'].'</option>';
+				}
+			break;
+
+			case 'villageResidence';
+				$data = $this->user_model->getVillage();
+				foreach($data as $key => $value){
+					$selected = '';
+                    if ($value['id'] == @$_POST['id_villageResidence']) {
                         $selected = 'selected';
                     }  
 					echo '<option value="'.$value['id'].'" ' . $selected . '>'.$value['name'].'</option>';
@@ -79,9 +110,14 @@ class User extends CI_Controller {
 
 	public function edit($id=0) {
 		$this->form_validation->set_rules('username', 'Username', 'required|min_length[5]|max_length[10]|trim|alpha_numeric_spaces');
-		// $this->form_validation->set_rules('name', 'Name', 'required|min_length[5]|max_length[10]');
+		$this->form_validation->set_rules('password', 'Password', 'min_length[6]');
+		$this->form_validation->set_rules('permission_id', 'Permission', 'required');
+		$this->form_validation->set_rules('username', 'Username', 'required|min_length[5]|max_length[10]|trim|alpha_numeric_spaces');
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-
+		$this->form_validation->set_rules('hp', 'Hp', 'required|min_length[11]|max_length[13]|numeric');
+		$this->form_validation->set_rules('name', 'Name', 'required|trim|alpha_numeric_spaces|min_length[5]|max_length[20]');
+		$this->form_validation->set_rules('nik', 'Nik','required|min_length[16]|max_length[16]|numeric|trim|alpha_numeric_spaces');
+		
 		$data=$this->user_model->save($id);
 		$data['permission'] = $this->user_model->all_permission();
 		$data['gender'] = $this->user_model->all_gender();

@@ -1,7 +1,56 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 class User_model extends CI_model
-{	
+{
+	private function _uploadPhoto()
+    {	
+        $filename = 'photo-' . date("Y-m-d-h-i-sa");
+        $config['upload_path']          = './assets/images/upload/user_profile';
+        $config['allowed_types']        = 'jpeg|jpg|png';
+        $config['file_name']            = $filename;
+        // $config['overwrite']            = true;
+        // $config['max_size']             = 1024; // 1MB
+        //$config['min_width']            = 1920;
+        //$config['min_height']           = 1128;
+        //$config['max_width']            = 1920;
+        //$config['max_height']           = 1128;
+
+        $this->load->library('upload', $config);
+		$this->upload->initialize($config);
+		
+        if ($this->upload->do_upload('photo')) {
+			$uploadedImage = $this->upload->data();
+			if ($uploadedImage['file_size'] > 1024) {
+				$resizeTo = 0;
+				$resizeTo = $uploadedImage['file_size'] / 1000;
+				$resizeTo = $uploadedImage['image_width'] / ceil($resizeTo);
+				$source_path = './assets/images/upload/user_profile/' . $uploadedImage['file_name'];
+				$target_path = './assets/images/upload/user_profile/';
+				$config_manip = array(
+					'image_library' => 'gd2',
+					'source_image' => $source_path,
+					'new_image' => $target_path,
+					'maintain_ratio' => TRUE,
+					'width' => ceil($resizeTo)
+				);
+				$this->load->library('image_lib', $config_manip);
+				$this->image_lib->resize();
+				$this->image_lib->rotate();
+				$this->image_lib->clear();
+			}
+            return $this->upload->data("file_name");
+        }
+        return "default.png";
+    }
+
+	private function _deleteFoto($image_name)
+    {
+        if ($image_name != "default.jpg") {
+            $filename = explode(".", $image_name)[0];
+            return array_map('unlink', glob(FCPATH . "/assets/images/upload/user_profile/$filename.*"));
+        }
+    }
+
 	public function check_login()
 	{
 		if (empty($this->session->userdata(str_replace('/', '_', base_url() . '_logged_in')))) {
@@ -141,24 +190,80 @@ class User_model extends CI_model
 			if (empty($data)) {
 				$data = $this->input->post();
 			}
+			$user = [
+				'username' => $data['username'],
+				'password' => $data['password'],
+				'permission_id' => $data['permission_id'],
+				'email' => $data['email']
+			];
 
+			$data['photo'] = @$this->_uploadPhoto();
+			
+			if(!preg_match('/[^+0-9]/',trim($data['hp']))){
+				// cek apakah no hp karakter 1-3 adalah +62
+				if(substr(trim($data['hp']), 0, 3)=='62'){
+					$data['hp'] = trim($data['hp']);
+				}
+				// cek apakah no hp karakter 1 adalah 0
+				elseif(substr(trim($data['hp']), 0, 1)=='0'){
+					$data['hp'] = '62'.substr(trim($data['hp']), 1);
+				}
+			}
+			$data['place_of_birth'] = [
+				'province' => $data['provincePob'],
+				'regency' => $data['regencyPob'],
+				'districts' => $data['districtsPob'],
+				'village' => $data['villagePob']
+			];
+			$data['place_of_birth'] = @json_encode($data['place_of_birth']);
+			$data['residence'] = [
+				'province' => $data['provinceResidence'],
+				'regency' => $data['regencyResidence'],
+				'districts' => $data['districtsResidence'],
+				'village' => $data['villageResidence']
+			];
+			$data['residence'] = @json_encode($data['residence']);
+
+			$profile = [
+				'user_id' => @$id,
+				'name' => $data['name'],
+				'gender' => $data['gender'],
+				'photo' => @$data['photo'],
+				'place_of_birth' => $data['place_of_birth'],
+				'residence' => $data['residence'],
+				'date_of_birth' => $data['date_of_birth'],
+				'address' => @$data['address'],
+				'nik' => $data['nik'],
+				'hp' => $data['hp']
+			];
+			 
 			if (!empty($id)) {
 				$this->db->select('id');
-				$exist = $this->db->get_where('user', ['username' => $data['username']])->row_array();
-				$current_data = $this->db->get_where('user', ['id' => $id])->row_array();
-				if ($current_data['id'] == @$exist['id'] || empty($exist)) {
-					if (empty($data['password'])) {
-						$pass = $current_data['password'];
-					} elseif (!empty($data['password'])) {
-						$pass = encrypt($data['password']);
+				$exist = $this->db->get_where('user', ['username' => $user['username']])->row_array();
+				$current_user = $this->db->get_where('user', ['id' => $id])->row_array();
+				$current_profile = $this->db->get_where('profile', ['user_id' => $id])->row_array();
+				
+				if(!empty($_FILES['photo']['name'])){
+					if ($current_profile['photo'] != null) {
+						$filename = explode(".", $current_profile['photo'])[0];
+						array_map('unlink', glob(FCPATH . "/assets/images/upload/user_profile/$filename.*"));
 					}
+				}else{
+					$profile['photo'] = $current_profile['photo'];
+				}
+
+				if (empty($user['password'])) {
+					$user['password'] = $current_user['password'];
+				} elseif (!empty($user['password'])) {
+					$user['password'] = encrypt($user['password']);
+				}
+					
+				if ($current_user['id'] == @$exist['id'] || empty($exist)) {
+					// print_r($profile);die;
 					$this->db->where('id', $id);
-					if ($this->db->update('user', [
-						'password' => $pass,
-						'username' => $data['username'],
-						'permission_id' => $data['permission_id'],
-						'email' => @$data['email'],
-					])) {
+					if ($this->db->update('user', $user)) {
+						$this->db->where('user_id', $id);
+						$this->db->update('profile', $profile);
 						$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 					}
 				} else {
@@ -168,12 +273,9 @@ class User_model extends CI_model
 				$this->db->select('id');
 				$exist = $this->db->get_where('user', ['username' => $data['username']])->row_array();
 				if (empty($exist)) {
-					if ($this->db->insert('user', [
-						'password' => encrypt($data['password']),
-						'username' => $data['username'],
-						'permission_id' => $data['permission_id'],
-						'email' => @$data['email'],
-					])) {
+					if ($this->db->insert('user', $user)) {
+						$profile['user_id'] = $this->db->insert_id();
+						$this->db->insert('profile', $profile);
 						$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 					}
 				} else {

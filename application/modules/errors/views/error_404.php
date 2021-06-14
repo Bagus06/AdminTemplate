@@ -13,12 +13,12 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/adminlte.min.css">
     <style>
-        #footer {
-            text-align: center;
-            position: fixed;
-            margin-left: 530px;
-            bottom: 0px
-        }
+    #footer {
+        text-align: center;
+        position: fixed;
+        margin-left: 530px;
+        bottom: 0px
+    }
     </style>
 </head>
 
@@ -31,12 +31,13 @@
             <div class="col-md-10">
                 <h3>OPPSSS!!!! Sorry...</h3>
                 <p>The page you requested was not found.</p>
-                <a class="btn btn-danger" href="<?= base_url() ?>">Go Home</a>
+                <a class="btn btn-danger" href="<?= base_url() . 'dashboard/main' ?>">Go Home</a>
             </div>
         </div>
     </div>
 
-    <div style="text-align: center;position: fixed;left: 0;bottom: 0;width: 100%;background-color: red;color: white;text-align: center;">
+    <div
+        style="text-align: center;position: fixed;left: 0;bottom: 0;width: 100%;background-color: red;color: white;text-align: center;">
         <strong>Copyright &copy; </strong>SIENTE.Corp <strong>2021</strong>
         Beta Version.
         <div class="d-none d-sm-inline-block">
