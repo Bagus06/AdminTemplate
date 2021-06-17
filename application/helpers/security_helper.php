@@ -1,5 +1,30 @@
 <?php if (!defined("BASEPATH")) exit("No direct script access allowed");
 
+if ( ! function_exists('checkPermission'))
+{
+    function checkPermission($link='', $id='')
+    {
+        $check = FALSE;
+        $CI =& get_instance();
+        $CI->db->select('id');
+        $getLink = $CI->db->get_where('link', ['link'=>$link])->row_array();
+
+        $CI->db->select('permission.group');
+        $CI->db->from('user');
+        $CI->db->join('permission', 'permission.id=user.permission_id');
+        $CI->db->where('user.id', $id);
+        $getPermission = $CI->db->get()->row_array();
+
+        if (!empty($getPermission['group'])) {
+            if (in_array($getLink['id'], @json_decode($getPermission['group']))) {
+                $check = TRUE;
+            }
+        }
+
+        return $check;
+    }
+}
+
 function encrypt_url($string) {
 
     $output = false;

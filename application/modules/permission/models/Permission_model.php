@@ -30,7 +30,9 @@ class Permission_model extends CI_model
 			$data['title'] = strtoupper($data['title']);
 			$data_input = [];
 			$data_input = [
-				'title'=>$data['title']
+				'title'=>$data['title'],
+				'row_status' => 1,
+				'last_updated_by' => get_user()['id']
 			];
 			if (!empty($data['group'])) {
 				// foreach ($data['group'] as $key) {
@@ -56,6 +58,7 @@ class Permission_model extends CI_model
 					$this->db->where('id', $id);
 					$this->db->set($data_input);
 					if ($this->db->update('permission')) {
+						history('update', $data_input);
 						$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 					}else{
 						$msg = ['status' => 'error', 'msg' => 'The data you entered already exists'];
@@ -67,6 +70,7 @@ class Permission_model extends CI_model
 				$this->db->select('id');
 				$exist = $this->db->get_where('permission', ['title' => $data['title']])->row_array();
 				if ($this->db->insert('permission', $data_input)) {
+					history('insert', $data_input);
 					$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 				}else{
 					$msg = ['status' => 'error', 'msg' => 'The data you entered already exists'];
@@ -86,14 +90,19 @@ class Permission_model extends CI_model
 	{
 		if (!empty($id)) {
 			$this->db->select('id');
-			$current_data = $this->db->get_where('permission', ['id' => $id])->row_array();
-			if (!empty($current_data)) {
-				if ($this->db->delete('permission', ['id' => $id])) {
+			$current_data = $this->db->get_where('permission', ['id' => $id, 'row_status' => 1])->row_array();
+			if(!empty($current_data)){
+				$this->db->where('id', $id);
+				$this->db->set(['row_status' => 2,'last_updated_by' => get_user()['id']]);
+				if ($this->db->update('permission')) {
+
+					history('delete', $id);
+					
 					return ['status' => 'success', 'msg' => 'Data has been deleted'];
 				} else {
-					return ['status' => 'danger', 'msg' => 'Data failed to delete'];
+					return ['status' => 'error', 'msg' => 'Data failed to delete'];
 				}
-			} else {
+			}else{
 				redirect(base_url('permission/main'));
 			}
 		}
@@ -105,7 +114,12 @@ class Permission_model extends CI_model
     var $order = array('title' => 'asc'); // default order 
  
     private function _get_datatables_query() {
+		$page = 1;
+		if (!empty($_GET['recycle'])) {
+			$page = 2;
+		}
         $this->db->select('*');
+		$this->db->where(['row_status' => @$page]);
         $this->db->from('permission');
         $i = 0;
         foreach ($this->column_search as $item) { // loop column 

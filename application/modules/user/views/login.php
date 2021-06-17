@@ -61,9 +61,9 @@
                         </div>
                     </div>
                 </form>
-                <p class="mb-1">
+                <!-- <p class="mb-1">
                     <a href="<?= base_url('token_request') ?>">I forgot my password</a>
-                </p>
+                </p> -->
                 <!-- <p class="mb-0">
                     <a href="" class="text-center">Register a new membership</a>
                 </p> -->

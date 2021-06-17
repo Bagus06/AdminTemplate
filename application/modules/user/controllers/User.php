@@ -133,27 +133,66 @@ class User extends CI_Controller {
 		$this->load->view('index', ['data' => @$data]);
 	}
 
-	function get_ajax() {
+	public function main_history($id=0) {
+		if( !empty($id)) {
+			$id=decrypt_url($id);
+			$data=$this->user_model->delete($id);
+		}
+		$this->load->view('index', ['data' => @$data]);
+	}
+	
+	function data_main() {
 		$list=$this->user_model->get_datatables();
 		$data=array();
 		$no=@$_POST['start'];
-
+		
 		foreach ($list as $item) {
 			$no++;
 			$row=array();
-			$row[]='<a title="Detail/Edit rows" href="' . BASE_URL('user/edit/' . encrypt_url($item->id)) . '"class="btn btn-link">' . $item->username . '</a>';
+			$edit = '';
+			$delete = '';
+			if(checkPermission('user/edit', get_user()['id']) == FALSE){
+				$edit = 'disabled'; 
+			}elseif(checkPermission('user/delete', get_user()['id']) == FALSE){
+				$delete = 'disabled'; 
+			}
+			$row[]='<a title="Detail/Edit rows" href="' . BASE_URL('user/edit/' . encrypt_url($item->id)) . '"class="btn btn-link ' . $edit . '">' . $item->username . '</a>';
 			$row[]=$item->email;
 			// add html for action
-			$row[]='<a title="Delete rows" href="' . BASE_URL('user/main/' . encrypt_url($item->id)) . '" data-items="' . $item->username . '" class="btn btn-link delete"><i class="fas fa-trash-alt"></i></a>';
-$data[]=$row;
-}
+			$row[]='<a title="Delete rows" href="' . BASE_URL('user/main/' . encrypt_url($item->id)) . '" data-items="' . $item->username . '" class="btn btn-link delete ' . $delete . '"><i class="fas fa-trash-alt"></i></a>';
+			$data[]=$row;
+		}
 
-$output=array("draw"=> @$_POST['draw'],
-"recordsTotal"=> $this->user_model->count_all(),
-"recordsFiltered"=> $this->user_model->count_filtered(),
-"data"=> $data,
-);
-// output to json format
-echo json_encode($output);
-}
+		$output=array("draw"=> @$_POST['draw'],
+		"recordsTotal"=> $this->user_model->count_all(),
+		"recordsFiltered"=> $this->user_model->count_filtered(),
+		"data"=> $data,
+		);
+		// output to json format
+		echo json_encode($output);
+	}
+
+	function data_history() {
+		$list=$this->user_model->get_datatables();
+		$data=array();
+		$no=@$_POST['start'];
+		
+		foreach ($list as $item) {
+			$no++;
+			$row=array();
+			$row[]=$item->username;
+			$row[]=$item->email;
+			// add html for action
+			$row[]='<a title="Restore rows" href="' . BASE_URL('user/main_history/' . encrypt_url($item->id)) . '" data-items="' . $item->username . '" class="btn btn-link restore"><i class="fas fa-undo-alt"></i></a>';
+			$data[]=$row;
+		}
+
+		$output=array("draw"=> @$_POST['draw'],
+		"recordsTotal"=> $this->user_model->count_all(),
+		"recordsFiltered"=> $this->user_model->count_filtered(),
+		"data"=> $data,
+		);
+		// output to json format
+		echo json_encode($output);
+	}
 }

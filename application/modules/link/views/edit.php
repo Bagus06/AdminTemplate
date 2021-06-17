@@ -10,6 +10,9 @@
         <button title="Save Form"
             onclick="document.input.action = ''; document.input.method='post'; document.input.submit(); return false;"
             class="btn btn-link"><i class="fas fa-lg fa-save"></i></button>
+        <a title="Recyclebin <?= @capital_letters($this->uri->rsegments[1]) ?>" class="btn btn-link disabled"
+            href="<?= base_url() . $this->uri->rsegments[1] . '/main_history' ?>"><i
+                class="fas fa-lg fa-recycle"></i></a>
     </div>
 </div>
 <div class="card">

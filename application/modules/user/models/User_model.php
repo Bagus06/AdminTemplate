@@ -153,7 +153,8 @@ class User_model extends CI_model
 			$data = [
 				'number' => $data['hp'],
 				'link_token' =>'',
-				'expired' => $date
+				'expired' => $date,
+				'status' => 2
 			];
 			$validation = true;
 
@@ -190,11 +191,15 @@ class User_model extends CI_model
 			if (empty($data)) {
 				$data = $this->input->post();
 			}
+			$full_data = $data;
 			$user = [
 				'username' => $data['username'],
 				'password' => $data['password'],
 				'permission_id' => $data['permission_id'],
-				'email' => $data['email']
+				'email' => $data['email'],
+				'status' => 1,
+				'row_status' => 1,
+				'last_updated_by' => get_user()['id'],
 			];
 
 			$data['photo'] = @$this->_uploadPhoto();
@@ -234,7 +239,9 @@ class User_model extends CI_model
 				'date_of_birth' => $data['date_of_birth'],
 				'address' => @$data['address'],
 				'nik' => $data['nik'],
-				'hp' => $data['hp']
+				'hp' => $data['hp'],
+				'row_status' => 1,
+				'last_updated_by' => get_user()['id']
 			];
 			 
 			if (!empty($id)) {
@@ -262,8 +269,12 @@ class User_model extends CI_model
 					// print_r($profile);die;
 					$this->db->where('id', $id);
 					if ($this->db->update('user', $user)) {
+						
+						history('update', $full_data);
+
 						$this->db->where('user_id', $id);
 						$this->db->update('profile', $profile);
+
 						$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 					}
 				} else {
@@ -275,6 +286,9 @@ class User_model extends CI_model
 				if (empty($exist)) {
 					if ($this->db->insert('user', $user)) {
 						$profile['user_id'] = $this->db->insert_id();
+						
+						history('insert', $full_data);
+						
 						$this->db->insert('profile', $profile);
 						$msg = ['status' => 'success', 'msg' => 'Data saved successfully'];
 					}
@@ -351,9 +365,17 @@ class User_model extends CI_model
 	{
 		if (!empty($id)) {
 			$this->db->select('id');
-			$current_data = $this->db->get_where('user', ['id' => $id])->row_array();
+			$current_data = $this->db->get_where('user', ['id' => $id, 'row_status' => 1])->row_array();
 			if(!empty($current_data)){
-				if ($this->db->delete('user', ['id' => $id])) {
+				$this->db->where('id', $id);
+				$this->db->set(['row_status' => 2,'last_updated_by' => get_user()['id']]);
+				if ($this->db->update('user')) {
+
+					$this->db->where('user_id', $id);
+					$this->db->set(['row_status' => 2,'last_updated_by' => get_user()['id']]);
+					$this->db->update('profile');
+					history('delete', $id);
+					
 					return ['status' => 'success', 'msg' => 'Data has been deleted'];
 				} else {
 					return ['status' => 'error', 'msg' => 'Data failed to delete'];
@@ -370,7 +392,12 @@ class User_model extends CI_model
     var $order = array('username' => 'asc'); // default order 
  
     private function _get_datatables_query() {
+		$page = 1;
+		if (!empty($_GET['recycle'])) {
+			$page = 2;
+		}
         $this->db->select('id, username, email');
+		$this->db->where(['username !=' => 'developer', 'row_status' => @$page]);
         $this->db->from('user');
         $i = 0;
         foreach ($this->column_search as $item) { // loop column 

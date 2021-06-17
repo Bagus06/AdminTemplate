@@ -1,18 +1,44 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-function application()
+
+if ( ! function_exists('application'))
 {
-	$CI =& get_instance();
-	$app = $CI->db->get_where('config', ['title'=>'application'])->row_array();
-	$app = json_decode($app['value']);
-	$data = [];
-	$data['name'] = @$app->title;
-	$data['version'] = '1.0.0';
-	$data['dsc'] = $app->desc;
-	$data['logo'] = 'assets/images/logo/' . $app->logo;
-	$data['background'] = 'assets/images/background/' . $app->background;
-	$data['loader'] = 'assets/images/logo/' . $app->loading;
-	return $data;
+	function application()
+	{
+		$CI =& get_instance();
+		$app = $CI->db->get_where('config', ['title'=>'application'])->row_array();
+		$app = json_decode($app['value']);
+		$data = [];
+		$data['name'] = @$app->title;
+		$data['version'] = '1.0.0';
+		$data['dsc'] = $app->desc;
+		$data['logo'] = 'assets/images/logo/' . $app->logo;
+		$data['background'] = 'assets/images/background/' . $app->background;
+		$data['loader'] = 'assets/images/logo/' . $app->loading;
+		return $data;
+	}
 }
+
+if ( ! function_exists('history'))
+{
+	function history($action = '', $value = '')
+	{
+		$inputing = FALSE;
+		$CI =& get_instance();
+		$url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$data = [
+			'user_id' => get_user()['id'],
+			'url' => @$url,
+			'action' => @$action,
+			'value' => @json_encode($value) 
+		];
+
+		if ($CI->db->insert('history', $data)) {
+			$inputing = TRUE;
+		}
+		return $inputing;
+	}
+}
+
 function encrypt($string = '')
 {
 	$key = '';

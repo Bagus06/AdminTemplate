@@ -43,6 +43,15 @@ class Link extends CI_Controller
 		$this->load->view('index', ['data' => @$data]);
 	}
 
+	public function main_history($id = 0)
+	{
+		if (!empty($id)) {
+			$id = decrypt_url($id);
+			$data = $this->link_model->delete($id);
+		}
+		$this->load->view('index', ['data' => @$data]);
+	}
+
 	private function array_user_has_link()
 	{
 		$return = [];
@@ -55,7 +64,7 @@ class Link extends CI_Controller
 		return $data;
 	}
 
-	function get_ajax()
+	function data_main()
 	{
 		$it = @$_GET['it'];
 		$list = $this->link_model->get_datatables($it);
@@ -67,7 +76,14 @@ class Link extends CI_Controller
 		foreach ($list as $item) {
 			$no++;
 			$row = array();
-			$row[] = '<a title="Detail/Edit rows" href="' . BASE_URL('link/edit/' . encrypt_url($item->id)) . '"class="btn btn-link">' . $item->title . '</a>';
+			$edit = '';
+			$delete = '';
+			if(checkPermission('link/edit', get_user()['id']) == FALSE){
+				$edit = 'disabled'; 
+			}elseif(checkPermission('link/delete', get_user()['id']) == FALSE){
+				$delete = 'disabled'; 
+			}
+			$row[] ='<a title="Detail/Edit rows" href="' . BASE_URL('link/edit/' . encrypt_url($item->id)) . '"class="btn btn-link ' . $edit . '">' . $item->title . '</a>';
 
 			$mode = 'View';
 			if ($item->mode == 2) {
@@ -86,8 +102,52 @@ class Link extends CI_Controller
 			}
 			$row[] = $to;
 			// add html for action
-			$row[] = '<a title="Delete rows" href="' . BASE_URL('link/main/' . encrypt_url($item->id)) . '"
-			data-items="' . $item->title . '" class="btn btn-link delete"><i class="fas fa-trash-alt"></i></a>';
+			$row[] = '<a title="Delete rows" href="' . BASE_URL('link/main/' . encrypt_url($item->id)) . '" data-items="' . $item->title . '" class="btn btn-link delete ' . $delete . '"><i class="fas fa-trash-alt"></i></a>';
+			$data[] = $row;
+		}
+		
+		$output = array(
+			"draw" => @$_POST['draw'],
+			"recordsTotal" => $this->link_model->count_all(),
+			"recordsFiltered" => $this->link_model->count_filtered(),
+			"data" => $data,
+		);
+		// output to json format
+		echo json_encode($output);
+	}
+
+	function data_history()
+	{
+		$it = @$_GET['it'];
+		$list = $this->link_model->get_datatables($it);
+		$data = array();
+		$no = @$_POST['start'];
+		$link_all = $this->link_model->all();
+		// print_r($array_user_has_link);die;
+		
+		foreach ($list as $item) {
+			$no++;
+			$row = array();
+			$row[] = $item->title;
+
+			$mode = 'View';
+			if ($item->mode == 2) {
+				$mode = 'Hidden';
+			}
+
+			$row[] = $mode;
+			$row[] = $item->link;
+			$to = '';
+			foreach($link_all as $key => $value){
+				if ($item->to_link == 0) {
+					$to = 'master';
+				}elseif($value['id'] == $item->to_link){
+					$to = $value['title'];
+				}
+			}
+			$row[] = $to;
+			// add html for action
+			$row[] = '<a title="Restore rows" href="' . BASE_URL('link/main_history/' . encrypt_url($item->id)) . '" data-items="' . $item->title . '" class="btn btn-link restore"><i class="fas fa-undo-alt"></i></a>';
 			$data[] = $row;
 		}
 		

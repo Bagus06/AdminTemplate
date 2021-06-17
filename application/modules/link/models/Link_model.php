@@ -91,8 +91,12 @@ class Link_model extends CI_model
 
 	private function _get_datatables_query($it=0)
 	{
-		// print_r($it);die;
+		$page = 1;
+		if (!empty($_GET['recycle'])) {
+			$page = 2;
+		}
 		$this->db->select('*');
+		$this->db->where(['row_status' => @$page]);
 		$this->db->from('link');
 
 		$i = 0;
